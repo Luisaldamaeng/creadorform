@@ -10,7 +10,7 @@ export function exportHTML(elements: CanvasElementType[]): string {
       const style = `position:absolute; left:${el.x}px; top:${el.y}px; width:${el.width}px; height:${el.height}px;`;
       switch (el.type) {
         case 'button':
-          return `<button style="${style}">${el.label || 'Botón'}</button>`;
+          return `<button style="${style}">${el.text || 'Botón'}</button>`;
         case 'input':
           return `<input placeholder="${el.placeholder || ''}" style="${style}" />`;
         case 'label':
@@ -38,7 +38,7 @@ export function exportReact(elements: CanvasElementType[]): string {
       const style = `{ position: 'absolute', left: ${el.x}, top: ${el.y}, width: ${el.width}, height: ${el.height} }`;
       switch (el.type) {
         case 'button':
-          return `      <button style={${style}}>${el.label || 'Botón'}</button>`;
+          return `      <button style={${style}}>${el.text || 'Botón'}</button>`;
         case 'input':
           return `      <input placeholder="${el.placeholder || ''}" style={${style}} />`;
         case 'label':

@@ -41,6 +41,15 @@ function App() {
           {dirty && <span className="badge-dirty">sin guardar</span>}
         </div>
         <div className="toolbar-right">
+          {selectedId && (
+            <button
+              className="toolbar-btn-danger"
+              onClick={() => removeElement(selectedId)}
+              style={{ marginRight: '8px' }}
+            >
+              Eliminar elemento
+            </button>
+          )}
           <button className="toolbar-btn" onClick={newProject}>Nuevo</button>
           <button className="toolbar-btn" onClick={save} disabled={saving}>
             {saving ? 'Guardando...' : 'Guardar'}

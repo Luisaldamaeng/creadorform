@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import type { CanvasElement, ComponentType } from './types';
 import { createProject, saveProject, loadProject } from './api';
@@ -40,12 +40,42 @@ const defaultElements: CanvasElement[] = [
 ];
 
 export function useStore() {
-  const [elements, setElements] = useState<CanvasElement[]>(defaultElements);
+  const [elements, setElements] = useState<CanvasElement[]>(() => {
+    const saved = localStorage.getItem('creadorform_elements');
+    return saved ? JSON.parse(saved) : defaultElements;
+  });
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [projectId, setProjectId] = useState<string | null>(null);
-  const [projectName, setProjectName] = useState('Sin título');
-  const [dirty, setDirty] = useState(false);
+  const [projectId, setProjectId] = useState<string | null>(() => {
+    return localStorage.getItem('creadorform_project_id');
+  });
+  const [projectName, setProjectName] = useState(() => {
+    return localStorage.getItem('creadorform_project_name') || 'Sin título';
+  });
+  const [dirty, setDirty] = useState(() => {
+    return localStorage.getItem('creadorform_dirty') === 'true';
+  });
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem('creadorform_elements', JSON.stringify(elements));
+  }, [elements]);
+
+  useEffect(() => {
+    if (projectId) {
+      localStorage.setItem('creadorform_project_id', projectId);
+    } else {
+      localStorage.removeItem('creadorform_project_id');
+    }
+  }, [projectId]);
+
+  useEffect(() => {
+    localStorage.setItem('creadorform_project_name', projectName);
+  }, [projectName]);
+
+  useEffect(() => {
+    localStorage.setItem('creadorform_dirty', String(dirty));
+  }, [dirty]);
+
 
   const addElement = useCallback((type: ComponentType, x: number, y: number, parentId?: string) => {
     const base: Omit<CanvasElement, 'id' | 'type' | 'x' | 'y'> = {
